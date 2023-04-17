@@ -25,14 +25,18 @@ void setup() {
 void loop() {
   for(int i = 0; i < 10; i++) { // send 10 data points per loop iteration
     // Read sensor data
-    int16_t ax, ay, az;
+    int16_t ax, ay, az, gx, gy, gz;
     mpu.getAcceleration(&ax, &ay, &az);
-    
+    mpu.getRotation(&gx, &gy, &gz);
+
     // Send sensor data over UDP
     udp.beginPacket(server_address, server_port);
     udp.write((uint8_t*)&ax, sizeof(ax));
     udp.write((uint8_t*)&ay, sizeof(ay));
     udp.write((uint8_t*)&az, sizeof(az));
+    udp.write((uint8_t*)&gx, sizeof(gx)); // send gyro data
+    udp.write((uint8_t*)&gy, sizeof(gy));
+    udp.write((uint8_t*)&gz, sizeof(gz));
     udp.endPacket();
     
     Serial.print("Data sent ");
